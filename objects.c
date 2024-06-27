@@ -15,7 +15,7 @@ static void Vertex(double th,double ph)
     double y = Cos(th)*Cos(ph);
     double z = Sin(ph);
     //for a sphere at the origin, normal = vertex
-//    glNormal3d(x,y,z);
+    glNormal3d(x,y,z);
     glVertex3d(x,y,z);
 }
 
@@ -25,9 +25,9 @@ void Sphere(double x, double y, double z, double r){
     glPushMatrix();
     glTranslated(x,y,z);
     glScaled(r,r,r);
-//    glMaterialf(GL_FRONT,GL_SHININESS,1);
-//    glMaterialfv(GL_FRONT,GL_SPECULAR,white);
-//    glMaterialfv(GL_FRONT,GL_EMISSION,black);
+    glMaterialf(GL_FRONT,GL_SHININESS,1);
+    glMaterialfv(GL_FRONT,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT,GL_EMISSION,black);
     //  Latitude bands
    for (int ph=-90;ph<90;ph+=15)
    {
@@ -42,13 +42,42 @@ void Sphere(double x, double y, double z, double r){
    glPopMatrix();
 }
 
-void Square(){
+/*
+* Draw the ground
+* texture - which texture do we want to use (will probably change later)
+* num - number of quads to use in the ground.
+*/
+void Ground(int texture, int num){
     glPushMatrix();
+    glColor3f(0,0.5,0);
     glBegin(GL_QUADS);
-    glVertex3f(1,1,0);
-    glVertex3f(-1,1,0);
-    glVertex3f(-1,-1,0);
-    glVertex3f(1,-1,0);
+    glNormal3d(0,1,0);
+    glVertex3d(-100,0,-100);
+    glVertex3d(100,0,-100);
+    glVertex3d(100,0,100);
+    glVertex3d(-100,0,100);
     glEnd();
     glPopMatrix();
+}
+
+void Tree(double x, double y, double z, double rotation){
+    //drawing trunk
+    glPushMatrix();
+    //translate, scale, rotate
+    glTranslated(x,y,z,);
+    glRotated(rotation,0,1,0);
+
+    glPopMatrix();
+}
+
+void FarmHouse(double x, double y, double z, double rotation){
+
+}
+
+void Fence(double x, double y, double z, double rotation){
+
+}
+
+void Car(double x, double y, double z){
+
 }

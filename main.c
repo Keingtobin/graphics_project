@@ -13,7 +13,7 @@ double sx = 0;
 double sy = 0;
 double sz = 0;
 int th = 0;
-int ph = 15;
+int ph = 30;
 
 //helper function to handle key staetes
 void keyHandler(){
@@ -36,9 +36,9 @@ void display(){
     //each display step, check key states.
     keyHandler();
     //eye position
-    double Ex = -2*dim*Sin(th)*Cos(ph);
-    double Ey = +2*dim        *Sin(ph);
-    double Ez = +2*dim*Cos(th)*Cos(ph);
+    double Ex = -2*dim*Sin(th)*Cos(ph) + sx;
+    double Ey = +2*dim        *Sin(ph) + sy;
+    double Ez = +2*dim*Cos(th)*Cos(ph) + sz;
      //clear window and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //enable depth buffering
@@ -46,9 +46,11 @@ void display(){
     //load identity matrix
     glLoadIdentity();
     //set perspective
-    gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
+    gluLookAt(Ex,Ey,Ez , sx,sy,sz , 0,Cos(ph),0);
     glColor3f(1,1,1);
-   Sphere(sx,sy,sz,1);
+    //try rotating before drawing
+    Sphere(sx,sy,sz,1);
+    Ground(1);
     //do the displaying
     glFlush();
     glutSwapBuffers();
@@ -122,7 +124,7 @@ int main(int argc, char* argv[]){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(500,500);
-    glutCreateWindow("Homework 2 Zach Huber");
+    glutCreateWindow("Lazy Driver | Zach Huber");
 #ifdef USEGLEW
    //  Initialize GLEW
    if (glewInit()!=GLEW_OK) Fatal("Error initializing GLEW\n");

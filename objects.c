@@ -31,6 +31,7 @@ static void Quad(vtx A, vtx B, vtx C, vtx D){
     glVertex3f(D.x,D.y,D.z);
     glEnd();
 }
+
 /*
  *  Draw vertex in polar coordinates and set normals
  * Taken from ex13
@@ -87,7 +88,7 @@ void Ground(int texture){
 }
 
 //tree data
-const int Ntree = 42;
+const int Ntree = 52;
 // tree index list
 const quad tree_idx[] = 
 {
@@ -100,17 +101,22 @@ const quad tree_idx[] =
     //start branching off - branch 1
     {20,21,22,23}, //"base" of the branches
     {20,21,25,24},{20,24,27,23},{23,27,26,22},{22,26,25,21},
-    {24,25,26,27},
+    {24,25,26,27}, //another cap
     {24,28,31,27},{27,31,30,26},{26,30,29,25},{25,29,28,24},
-    {28,29,30,31},
-    {32,33,34,35},
+    {28,29,30,31}, //and another one
+    {32,33,34,35}, //base of smaller branch
     {32,33,37,36},{32,36,39,35},{35,39,38,34},{34,38,37,33},
-    {36,37,38,39},
+    {36,37,38,39}, //cap small boy off
     //start branching off - branch 2
     {20,21,41,40},{20,40,43,23},{23,43,42,22},{22,42,41,21},
-    {40,41,45,44},{40,44,47,43},{43,47,46,42},{42,46,45,41}
-
-
+    {40,41,45,44},{40,44,47,43},{43,47,46,42},{42,46,45,41},
+    {44,45,46,47}, //cap 'er off
+    //start branching off - branch 3
+    {20,48,51,23},{23,51,50,22},{22,50,49,21},{21,49,48,20},
+    {48,52,55,51},{51,55,54,50},{50,54,53,49},{49,53,52,48},
+    {52,53,54,55} // cap it off
+    // {48,50,56,57}, //small branch cross section 1
+    // {48,60,61,50},{50,61,62,56},{56,62,63,57},{57,63,60,48}
 };
 // tree vertex coords
 const vtx tree[] = 
@@ -126,13 +132,65 @@ const vtx tree[] =
     {-0.125,0.92, -0.34},{-0.125, 0.92, -0.37},{-0.125, 0.96, -0.37},{-0.125, 0.96, -0.34}, //32,33,34,35
     {-0.5,0.92, -0.34},{-0.5, 0.92, -0.37},{-0.5, 0.96, -0.37},{-0.5, 0.96, -0.34}, //36,37,38,39
     {0.25, 1.3, -0.4},{0.25, 1.3, -0.5}, {0.35, 1.3, -0.5},{0.35, 1.3, -0.4}, //40,41,42,43
-    {0.05, 1.5, -0.5}, {0.05, 1.5, -0.6}, {0.15, 1.5, -0.6}, {0.15, 1.5, -0.5} //44,45,46,47
-
+    {0.05, 1.5, -0.6}, {0.05, 1.5, -0.7}, {0.15, 1.5, -0.7}, {0.15, 1.5, -0.6}, //44,45,46,47
+    {0.5, 1.4, 0.2},{0.5, 1.4, 0.1},{0.6, 1.4, 0.1},{0.6, 1.4, 0.2}, //48,49,50,51
+    {0.3, 1.65, 0.4},{0.3, 1.6, 0.3}, {0.35, 1.6, 0.3},{0.35,1.65,0.4} //52,53,54,55
 };
 
 
-
-void Tree(double x, double y, double z, double rotation){
+//canopy index list
+const int Ncnpy = 25;
+const quad cnpy_idx[] = {
+    {0,1,2,3}, //base
+    {0,3,4,0},{1,0,5,1},{2,1,6,2},{3,2,7,3}, //triangles off of base
+    {0,4,5,0},{1,5,6,1},{2,6,7,2},{3,7,4,3}, //more triangles, make a quad shape
+    {4,8,9,5},{5,9,10,6},{6,10,11,7},{7,11,8,4}, //quads off the formed quad (middle of the canopy)
+    {8,12,9,8},{9,13,10,9},{10,14,11,10},{11,15,8,11}, // MORE TRIANGLES!!!!
+    {8,15,12,8},{9,12,13,9},{10,13,14,10},{11,14,15,11}, //WE NEED MORE TRIANGLES!!!!!
+    {12,15,16,12},{15,14,16,15},{14,13,16,14},{13,12,16,13}//cap this sucker off
+};
+//canopy vertex list
+const vtx cnpy[] = {
+    {0.42, 0, 0.42},{0.42, 0, -0.42},{-0.42, 0, -0.42},{-0.42, 0, 0.42}, //0,1,2,3
+    {0.0, 0.2, 0.83},{0.83, 0.2, 0.0},{0.0, 0.2, -0.83},{-0.83, 0.2, 0.0}, //4,5,6,7
+    {0.0, 0.4, 0.83},{0.83, 0.4, 0.0},{0.0, 0.4, -0.83},{-0.83, 0.4, 0.0}, //8,9,10,11
+    {0.42, 0.6, 0.42},{0.42, 0.6, -0.42},{-0.42, 0.6, -0.42},{-0.42, 0.6, 0.42}, //12,13,14,15
+    {0.0,0.7,0.0} // 16
+};
+/*
+Draw Canopy at (x,y,z), scaled by (sx,sy,sz)
+c decides color of canopy.
+1: Dark Green, 2: Lighter Green
+Will be re-used for bushes 
+*/
+void Canopy(double x, double y, double z, double sx, double sy, double sz, int c){
+    //set the color
+    float color[4];
+    if(c == 1){
+        color[0] = 0.0235;color[1] = 0.349;color[2] = 0.0;color[3] = 1.0;
+    }
+    if(c == 2){
+        color[0] = 0.2431;color[1] = 0.4824;color[2] = 0.1647;color[3] = 1.0;
+    }
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    glColor4fv(color);
+    glPushMatrix();
+    //translate, scale
+    glTranslated(x,y,z);
+    glScaled(sx,sy,sz);
+    for(int i = 0; i < Ncnpy; i++){
+        Quad(cnpy[cnpy_idx[i].A],cnpy[cnpy_idx[i].B],cnpy[cnpy_idx[i].C],cnpy[cnpy_idx[i].D]);
+    }
+    glPopMatrix();
+}
+/*
+Draw Tree at (x,y,z) rotated about y by rotation.
+Canopy determines if the tree has green or not
+*/
+void Tree(double x, double y, double z, double rotation, bool canopy){
     //set up some colors we need
     float brown[] = {0.5430, 0.2610, 0.0742, 1.0};
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,1);
@@ -140,13 +198,24 @@ void Tree(double x, double y, double z, double rotation){
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);   
     glColor4fv(brown);
-     //drawing trunk
     glPushMatrix();
-    //translate, scale, rotate
+    //translate, rotate
     glTranslated(x,y,z);
     glRotated(rotation,0,1,0);
+    //draw all the vectors
     for(int i = 0; i < Ntree; i++){
         Quad(tree[tree_idx[i].A],tree[tree_idx[i].B],tree[tree_idx[i].C],tree[tree_idx[i].D]);
+    }
+    if(canopy){
+        Canopy(-0.25,1.2,-0.45,0.8,0.8,0.8,2);
+        glPushMatrix();
+        glRotated(-5,0,0,1);
+        Canopy(0.325,1.6,0.35,1,1,1,1);
+        glPopMatrix();
+        glPushMatrix();
+        glRotated(90,0,0,1);
+        Canopy(0.94,0.5,-0.345,0.3,0.5,0.5,2);
+        glPopMatrix();
     }
 
     glPopMatrix();

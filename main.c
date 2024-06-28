@@ -38,7 +38,7 @@ void keyHandler(){
 }
 
 void display(){
-    //debug mode
+    //modeling mode
     if(mode){
         keyHandler();
         double Ex = -2*dim*Sin(th)*Cos(ph);
@@ -72,8 +72,7 @@ void display(){
         glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
         glLightfv(GL_LIGHT0,GL_POSITION,Position);
         //draw stuff
-        Tree(0,0,0,0);
-
+        Tree(0,0,0,0,1);
         glDisable(GL_LIGHTING);
         //draw axes
         glColor3f(1,1,1);
@@ -97,7 +96,7 @@ void display(){
         glFlush();
         glutSwapBuffers();
     }
-    else{
+    else{ //actual app mode
         //each display step, check key states.
         keyHandler();
         //eye position
@@ -114,7 +113,7 @@ void display(){
         gluLookAt(Ex,Ey,Ez , sx,sy,sz , 0,Cos(ph),0);
         glColor3f(1,1,1);
         //try rotating before drawing
-        Tree(0,0,0,0);
+        Tree(0,0,0,0,1);
         Ground(1);
         //do the displaying
         glFlush();

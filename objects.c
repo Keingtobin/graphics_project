@@ -220,11 +220,15 @@ void Tree(double x, double y, double z, double rotation, bool canopy){
 
     glPopMatrix();
 }
-
+/*
+Draw a FarmHouse at x,y,z rotated about y axis by rotation
+*/
 void FarmHouse(double x, double y, double z, double rotation){
 
 }
-
+/*
+Draw a Fence at x,y,z rotated about y axis by rotation
+*/
 void Fence(double x, double y, double z, double rotation){
 
 }

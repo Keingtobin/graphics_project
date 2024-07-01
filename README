@@ -1,0 +1,17 @@
+Computer Graphics Final Project - Spooky Barn
+
+Compile using "make main" command. Run with ./main
+
+This program renders a 3D scene filled with trees, a barn, bushes, and more to be added. You are able to traverse the scene using the WASD keys for movement, and Left/Right arrow keys to look around. The lighting in this scene is based on a spotlight positioned at the players body (image they are holding a flashlight).
+
+CONTROLS:
+ESC - Exit Program
+Left/Right Arrows - Look left/right
+WASD - Movement
+M - Toggle into modeling mode (used for debugging and creating all my custom objects).
+
+TODO: I need to finish creating more objects. This will definitely include fences but more will also likely be added. I also need to refine the lighting more. To wrap up the entire project, I also need to create a scene that fully fits together. 
+
+Note* - Modeling mode is currently not going to allow you to look around the scene. 
+
+Time Taken: Approximately 35 Hours. (Making that tree took a very very long time).
